@@ -1,0 +1,11 @@
+* { box-sizing: border-box; }
+body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 2rem; }
+.container { max-width: 800px; margin: auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+h1 { color: #333; }
+input[type="file"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+button, .btn { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; margin: 5px; text-decoration: none; display: inline-block; }
+button:hover, .btn:hover { background: #0056b3; }
+.preview { max-width: 200px; margin: 15px 0; border: 3px solid #007bff; border-radius: 10px; }
+.success { margin: 20px 0; padding: 20px; background: #d4edda; border-radius: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.card-item { text-align: center; }

@@ -1,0 +1,1 @@
+    compile(workerData.input, workerData.output).then(() = success: true, output: workerData.output })).catch(err = success: false, error: err.message }));

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>All Cards</title>
+  <style>
+    body {font-family: sans-serif; padding: 20px;}
+    .grid {display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;}
+    .card-item {border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center;}
+    img {max-width: 100%; height: auto;}
+    a {color: #007bff; text-decoration: none;}
+  </style>
+</head>
+<body>
+  <h1>All AR Cards ({{ triggers.count }})</h1>
+  <a href="/">Upload New</a>
+  <div class="grid">
+    {% for t in triggers %}
+      <div class="card-item">
+        <img src="{{ t.image.url }}" width="100">
+        <p>
+          <a href="/ar/{{ t.uid }}/">Scan</a> |
+          <a href="/card/{{ t.uid }}/">Download</a>
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+  worker.on('error', err = console.error('Worker error:', err); process.exit(1); });

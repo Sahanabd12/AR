@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AR Video Card</title>
+  <style>
+    body {font-family: sans-serif; background: #f4f4f4; padding: 20px;}
+    .container {max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px;}
+    input, button {width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;}
+    button {background: #007bff; color: white; font-size: 16px; cursor: pointer;}
+    .btn {display: inline-block; background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 5px;}
+    #progress-container {margin: 20px 0; display: none;}
+    #progress-bar {height: 20px; background: #eee; border-radius: 10px; overflow: hidden;}
+    #progress-fill {height: 100%; width: 0%; background: #007bff; transition: width 0.3s;}
+    #progress-text {text-align: center; margin-top: 8px; font-weight: bold;}
+    .success {background: #d4edda; padding: 15px; border-radius: 5px; margin-top: 20px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload Photo + Video</h1>
+    <form id="form">
+      <p><input type="file" name="image" accept="image/*" required></p>
+      <p><input type="file" name="video" accept="video/*" required></p>
+      <p><button type="submit">Upload & Generate AR</button></p>
+    </form>
+
+    <div id="progress-container">
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+      <div id="progress-text">Starting...</div>
+    </div>
+
+    <div id="result"></div>
+    <p><a href="/list/">View All Cards</a></p>
+  </div>
+
+  <script>
+    document.getElementById('form').onsubmit = async (e) => {
+      e.preventDefault();
+      const container = document.getElementById('progress-container');
+      const fill = document.getElementById('progress-fill');
+      const text = document.getElementById('progress-text');
+      document.getElementById('result').innerHTML = '';
+
+      container.style.display = 'block';
+      fill.style.width = '0%';
+      text.textContent = 'Preparing...';
+
+      const form = new FormData(e.target);
+      const res = await fetch('', { method: 'POST', body: form });
+      const data = await res.json();
+
+      if (data.error) {
+        alert('Error: ' + data.error);
+        container.style.display = 'none';
+        return;
+      }
+
+      // Start progress stream
+      const evtSource = new EventSource(`/progress/?uid=${data.uid}`);
+      evtSource.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        fill.style.width = msg.progress + '%';
+        text.textContent = msg.message || `${msg.progress}%`;
+
+        if (msg.done) {
+          evtSource.close();
+          container.style.display = 'none';
+
+          document.getElementById('result').innerHTML = `
+            <div class="success">
+              <h3>AR Card Ready!</h3>
+              <img src="${data.image_url}" style="max-width:200px; margin:10px 0;">
+              <p>
+                <a href="${data.card_url}" class="btn" download>Download Card</a>
+                <a href="${data.ar_url}" class="btn" target="_blank">Test Scan</a>
+              </p>
+            </div>
+          `;
+        }
+      };
+    };
+  </script>
+</body>
+</html>
